@@ -1,37 +1,52 @@
 # MindLens – AI Student Wellbeing Analyzer
 
-MindLens is an AI-powered student wellbeing companion designed to help students track and improve their mental health. Built with a focus on premium aesthetics (glassmorphism, soft gradients, smooth animations), the application offers interactive tools like journaling, mood tracking, and a supportive AI chatbot.
+MindLens is a modern, AI-powered student wellbeing companion designed to help students track and improve their mental health. Built with a focus on premium GenZ aesthetics (glassmorphism, soft gradients, dynamic drop-shadows, and smooth micro-animations), the application offers interactive tools like journaling, real-time mood tracking, burnout analysis, and a supportive AI chatbot.
 
-## Core Features & Implementation Details
+## Core Features & Capabilities
 
-### 1. AI Chatbot
-The Chatbot serves as a supportive, empathetic companion for students experiencing stress or burnout. 
-- **How it works:** Users interact with a floating chat interface. The messages are streamed in real-time using Supabase Edge Functions connecting to Google's Gemini-3-flash-preview model.
-- **Tech Stack:** React Markdown is utilized for rendering rich text, list formatting, and applying markdown structure perfectly within chat bubbles.
-- **Safety Trigger:** Built-in client-side keyword interception scans for emergency phrases (e.g., "suicide", "want to die"). If triggered, it instantly presents an unmissable Emergency Alert modal with direct, clickable links to the National Crisis Lifeline (988) and Local Emergency Police (911).
+### 1. Real-Time Mood Camera
+Get an instant reading of your facial expressions and emotional state right from your browser.
+- **How it works:** Leverages the native `navigator.mediaDevices.getUserMedia` API securely. It integrates the powerful `face-api.js` library utilizing `tinyFaceDetector` and `faceExpressionNet` models to process facial landmarks locally.
+- **Accuracy:** The camera accurately maps micro-expressions against 7 core emotions (Happy, Sad, Angry, Surprised, Neutral, Fearful, Disgusted) in real-time, outputting dynamic confidence percentages.
+- **Data Privacy:** Video streams and image data never leave the client device. Detected mood strings can be explicitly saved to the database.
 
-### 2. Mood Camera Tracker
-The Mood Camera allows users to get an instant reading of their facial expressions and emotional state.
-- **How it works:** Leverages the native `navigator.mediaDevices.getUserMedia` API to securely access the user's webcam and process the video stream entirely in the browser. Emulated emotion detection randomly cycles through 7 standard emotions (happy, sad, angry, surprised, neutral, fearful, disgusted), assigning a confidence score.
-- **Data Privacy:** Video streams are strictly kept local and immediately discarded when navigating away using React Component cleanup hooks. Detected moods can be saved manually to the Supabase database.
+### 2. Algorithmic Burnout Questionnaire
+A structured psychological assessment with clinical precision.
+- **How it works:** Users answers a rotating daily pool of 8 randomly-seeded questions on a 5-point Likert scale (Never to Always).
+- **Diagnostics:** Utilizes weighted reverse-scoring logic calibrated over a 40-point index. Yields 4 definitive burnout risk bands (*Excellent Focus & Calm*, *Mild Strain*, *Moderate Coping Risk*, *High Burnout Risk*).
 
-### 3. Voice-Enabled Journaling
+### 3. Voice-Enabled AI Journaling
 A safe space to write about daily experiences with automated AI sentiment analysis.
-- **How it works:** Users can directly type their thoughts or utilize the **Voice Input** feature powered by the native Web Speech API. The continuous dictation seamlessly handles transcription and supports English (US/India) and Hindi dialects.
-- **AI Analysis:** Upon saving, the journal text is sent to the backend. The Edge Function evaluates the entry against psychological parameters to return the current sentiment, primary emotion, a 1-10 mood score, and specific keywords related to stress/burnout.
-- **Safety Trigger:** Similarly to the Chatbot, the Journal actively monitors text input for critical distress signals and invokes the Emergency Alert System if necessary.
+- **Voice Dictation:** Users can directly type their thoughts or utilize the **Voice Input** feature powered natively by the Web Speech API. Supports seamless dictation in English (US/India) and Hindi.
+- **Supabase Edge Analysis:** Upon saving, the journal text is sent to our Supabase Edge function interfacing with the Google Gemini-3-flash model. It evaluates psychological parameters to return sentiment, primary emotion, a mood score (1-10), and tracks burnout-related keywords.
+- **Emergency Safety:** Actively monitors text input for critical distress signals and instantly invokes an unmissable Emergency Alert System with crisis lifelines if necessary.
 
-### 4. Burnout Questionnaire & Dashboard
-- **Questionnaire:** A structured psychological assessment. Users answer scaled questions and the application calculates a personalized burnout risk profile, identifying specific areas like Emotional Exhaustion or Depersonalization.
-- **Dashboard:** An interactive visual hub featuring glassmorphic cards that summarize the user's wellbeing metrics, recently acquired journal entries, and general progress over time.
-- **Dark Mode:** A comprehensive custom ThemeProvider enables users to switch the entire application between light, dark, and system-defined themes with a persistent local storage state.
+### 4. Empathetic AI Chatbot
+The Chatbot serves as a supportive companion for navigating academic stress or general burnout. 
+- **How it works:** Real-time streaming interface hooked into Gemini through Supabase Edge Functions. It utilizes `react-markdown` and `remark-gfm` to perfectly parse and render rich text, structured lists, and bold highlighting.
+
+### 5. Personalized Dashboard & Theming
+- **Visual Hub:** An interactive dashboard featuring frosted glassmorphic cards summarizing wellbeing metrics, sleep/study/screen-time caps, recent journal entries, and progress.
+- **Global Theming:** Comprehensive `ThemeProvider` enabling ubiquitous localized switching between Light, Dark, and System display modes. 
 
 ## Technology Stack
 
-- **Frontend:** React, TypeScript, Vite, React Router
-- **Styling:** Tailwind CSS, shadcn-ui UI components, native CSS variables
-- **Backend & Database:** Supabase (PostgreSQL), RESTful APIs, Edge Functions
-- **AI Integration:** Google Gemini Models, Web Speech API
+**Frontend Architecture:**
+- **Core Framework:** React 18, TypeScript, Vite
+- **Routing:** React Router v6
+- **State & Data Fetching:** React Query, Supabase JS Client
+
+**UI/UX & Styling:**
+- **CSS Framework:** Tailwind CSS (with arbitrary value classes and modern typography utilities)
+- **Component Library:** shadcn/ui paired with Radix UI Primitives (Accordion, Dialog, Slider, etc.)
+- **Icons & Animations:** Lucide React, Tailwind CSS Animate, Embla Carousel
+
+**Backend, AI & Machine Learning:**
+- **Database & Auth:** Supabase (PostgreSQL, Row Level Security)
+- **Serverless Compute:** Supabase Edge Functions (Deno)
+- **Generative AI:** Google Gemini Models
+- **Computer Vision:** `face-api.js` (Client-side localized face detection payload)
+- **Native Web APIs:** Web Speech API (Voice-to-Text)
 
 ## Getting Started
 
@@ -48,3 +63,4 @@ A safe space to write about daily experiences with automated AI sentiment analys
    ```sh
    npm run dev
    ```
+   *Note: Application runs locally on port 8080 depending on configuration.*
