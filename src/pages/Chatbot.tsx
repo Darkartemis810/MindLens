@@ -86,11 +86,18 @@ export default function Chatbot() {
                 return [...prev, { role: "assistant", content: assistantSoFar }];
               });
             }
-          } catch { buffer = line + "\n" + buffer; break; }
+          } catch (e) {
+            console.warn("Stream parse warning skipped:", e);
+            buffer = line + "\n" + buffer;
+            break;
+          }
         }
       }
-    } catch {
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I'm having trouble connecting right now. Please try again." }]);
+    } catch (err) {
+      console.error("Chat streaming error caught:", err);
+      if (!assistantSoFar) {
+        setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I'm having trouble connecting right now. Please try again." }]);
+      }
     }
     setLoading(false);
   };
