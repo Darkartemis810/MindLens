@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "./theme-provider";
 import { Button } from "@/components/ui/button";
-import { Brain, BookOpen, Camera, Activity, ClipboardList, LayoutDashboard, MessageCircle, LogOut, Menu, X } from "lucide-react";
+import { Brain, BookOpen, Camera, Activity, ClipboardList, LayoutDashboard, MessageCircle, LogOut, Menu, X, User, Moon, Sun } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
@@ -11,10 +12,12 @@ const navItems = [
   { to: "/questionnaire", label: "Questionnaire", icon: ClipboardList },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/chatbot", label: "AI Chat", icon: MessageCircle },
+  { to: "/profile", label: "Profile", icon: User },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -34,11 +37,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <Link
                     key={to}
                     to={to}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      location.pathname === to
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                    }`}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === to
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      }`}
                   >
                     <Icon className="h-4 w-4" />
                     {label}
@@ -47,7 +49,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </nav>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={signOut} className="hidden md:flex">
+                <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+                <Button variant="ghost" size="sm" onClick={signOut} className="hidden md:flex text-muted-foreground hover:text-foreground">
                   <LogOut className="h-4 w-4 mr-1" /> Sign Out
                 </Button>
                 <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -65,9 +70,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 key={to}
                 to={to}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${
-                  location.pathname === to ? "bg-primary/10 text-primary" : "text-muted-foreground"
-                }`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${location.pathname === to ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                  }`}
               >
                 <Icon className="h-4 w-4" />
                 {label}

@@ -62,78 +62,85 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container py-8 space-y-6">
-      <h1 className="text-2xl font-display font-bold flex items-center gap-2">
-        <LayoutDashboard className="h-6 w-6 text-primary" /> Insights Dashboard
+    <div className="container py-8 space-y-8 relative min-h-[calc(100vh-4rem)]">
+      {/* Background Glow */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+
+      <h1 className="text-3xl font-display font-bold flex items-center gap-3">
+        <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-accent/10 border border-primary/10">
+          <LayoutDashboard className="h-6 w-6 text-primary" />
+        </div>
+        Insights Dashboard
       </h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {/* Daily Mood */}
-        <Card>
+        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-              <BookOpen className="h-4 w-4" /> Journal Mood
+            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
+              <BookOpen className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Journal Mood
             </CardTitle>
           </CardHeader>
           <CardContent>
             {latestJournal ? (
               <>
-                <p className="text-3xl font-bold">{latestJournal.mood_score}/10</p>
-                <Badge variant="outline" className="mt-1">{latestJournal.emotion}</Badge>
+                <p className="text-4xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">{latestJournal.mood_score}/10</p>
+                <Badge variant="outline" className="mt-2 bg-primary/5 border-primary/10">{latestJournal.emotion}</Badge>
               </>
             ) : <p className="text-sm text-muted-foreground">No entries yet</p>}
           </CardContent>
         </Card>
 
         {/* Camera Emotion */}
-        <Card>
+        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-              <Camera className="h-4 w-4" /> Camera Emotion
+            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
+              <Camera className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Camera Emotion
             </CardTitle>
           </CardHeader>
           <CardContent>
             {latestMood ? (
               <>
-                <p className="text-3xl font-bold capitalize">{latestMood.emotion}</p>
-                <Badge variant="outline" className="mt-1">{latestMood.confidence}% confidence</Badge>
+                <p className="text-3xl font-bold capitalize bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent truncate">{latestMood.emotion}</p>
+                <Badge variant="outline" className="mt-2 bg-primary/5 border-primary/10">{latestMood.confidence}% confidence</Badge>
               </>
-            ) : <p className="text-sm text-muted-foreground">No snapshots yet</p>}
+            ) : <p className="text-sm text-muted-foreground">No snapshots</p>}
           </CardContent>
         </Card>
 
         {/* Burnout Risk */}
-        <Card>
+        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-              <Activity className="h-4 w-4" /> Burnout Risk
+            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
+              <Activity className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Burnout Risk
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-2">
             {burnout ? (
-              <Badge className={`text-lg px-3 py-1 ${riskColor(burnout.risk_level)}`}>{burnout.risk_level}</Badge>
-            ) : <p className="text-sm text-muted-foreground">Not assessed</p>}
+              <Badge className={`text-xl px-4 py-1.5 shadow-sm ${riskColor(burnout.risk_level)}`}>{burnout.risk_level}</Badge>
+            ) : <p className="text-sm text-muted-foreground pt-1">Not assessed</p>}
           </CardContent>
         </Card>
 
         {/* Questionnaire */}
-        <Card>
+        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-              <Brain className="h-4 w-4" /> Wellbeing Score
+            <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
+              <Brain className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Wellbeing Score
             </CardTitle>
           </CardHeader>
           <CardContent>
             {questionnaire ? (
               <>
-                <p className="text-3xl font-bold">{questionnaire.total_score}/24</p>
-                <div className="flex gap-1 mt-1 flex-wrap">
-                  <Badge variant="outline" className="text-xs">A:{questionnaire.anxiety_score}</Badge>
-                  <Badge variant="outline" className="text-xs">S:{questionnaire.stress_score}</Badge>
-                  <Badge variant="outline" className="text-xs">F:{questionnaire.fatigue_score}</Badge>
+                <p className="text-4xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">{questionnaire.total_score}<span className="text-2xl text-muted-foreground">/24</span></p>
+                <div className="flex gap-1.5 mt-2 flex-wrap">
+                  <Badge variant="outline" className="text-[10px] px-1.5 bg-background/50 border-primary/10 text-muted-foreground">A:{questionnaire.anxiety_score}</Badge>
+                  <Badge variant="outline" className="text-[10px] px-1.5 bg-background/50 border-primary/10 text-muted-foreground">S:{questionnaire.stress_score}</Badge>
+                  <Badge variant="outline" className="text-[10px] px-1.5 bg-background/50 border-primary/10 text-muted-foreground">F:{questionnaire.fatigue_score}</Badge>
                 </div>
               </>
-            ) : <p className="text-sm text-muted-foreground">Not taken yet</p>}
+            ) : <p className="text-sm text-muted-foreground">Not taken</p>}
           </CardContent>
         </Card>
       </div>
