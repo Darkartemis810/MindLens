@@ -48,10 +48,11 @@ const getDailyQuestions = () => {
 };
 
 const options = [
-  { value: "0", label: "Not at all" },
-  { value: "1", label: "Several days" },
-  { value: "2", label: "More than half the days" },
-  { value: "3", label: "Nearly every day" },
+  { value: "1", label: "Never" },
+  { value: "2", label: "Rarely" },
+  { value: "3", label: "Sometimes" },
+  { value: "4", label: "Often" },
+  { value: "5", label: "Always" },
 ];
 
 export default function Questionnaire() {
@@ -70,7 +71,8 @@ export default function Questionnaire() {
     let anxiety = 0, stress = 0, fatigue = 0;
     questions.forEach((q) => {
       const val = parseInt(answers[q.id]);
-      const score = q.reverse ? 3 - val : val;
+      // If reversed, high values (Always) become low risk (1 = 5, 2 = 4, etc.)
+      const score = q.reverse ? 6 - val : val;
       if (q.category === "anxiety") anxiety += score;
       else if (q.category === "stress") stress += score;
       else fatigue += score;
@@ -92,10 +94,12 @@ export default function Questionnaire() {
     toast({ title: "Questionnaire saved" });
   };
 
+  // Max score for 8 questions * 5 points = 40
   const scoreLabel = (total: number) => {
-    if (total <= 6) return { label: "Good", color: "bg-success text-success-foreground" };
-    if (total <= 14) return { label: "Moderate", color: "bg-warning text-warning-foreground" };
-    return { label: "Needs Attention", color: "bg-destructive text-destructive-foreground" };
+    if (total <= 16) return { label: "Excellent Focus & Calm", color: "bg-success text-success-foreground" };
+    if (total <= 24) return { label: "Mild Strain (Normal)", color: "bg-success/80 text-success-foreground" };
+    if (total <= 32) return { label: "Moderate Coping Risk", color: "bg-warning text-warning-foreground" };
+    return { label: "High Burnout Risk - Seek Support", color: "bg-destructive text-destructive-foreground" };
   };
 
   return (
@@ -150,7 +154,7 @@ export default function Questionnaire() {
                   <div className="flex items-baseline gap-1">
                     <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/70">{scores.total}</span>
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">out of 24</span>
+                  <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">out of 40</span>
                 </div>
               </div>
               <Badge className={`text-lg px-6 py-2 shadow-sm rounded-full ${scoreLabel(scores.total).color}`}>{scoreLabel(scores.total).label}</Badge>
