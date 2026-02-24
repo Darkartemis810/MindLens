@@ -1,26 +1,15 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Settings, Shield, Bell, LogOut, Sun, Moon } from "lucide-react";
-import { useState, useEffect } from "react";
 
 export default function Profile() {
     const { user, signOut } = useAuth();
-    const [theme, setTheme] = useState<"light" | "dark">("light");
-
-    useEffect(() => {
-        const isDark = document.documentElement.classList.contains("dark");
-        setTheme(isDark ? "dark" : "light");
-    }, []);
+    const { theme, setTheme } = useTheme();
 
     const toggleTheme = () => {
-        const newTheme = theme === "light" ? "dark" : "light";
-        setTheme(newTheme);
-        if (newTheme === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
+        setTheme(theme === "light" ? "dark" : "light");
     };
 
     if (!user) return null;

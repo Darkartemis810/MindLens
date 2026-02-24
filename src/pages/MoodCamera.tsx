@@ -33,15 +33,33 @@ export default function MoodCamera() {
 
   const simulateDetection = useCallback(() => {
     if (simIntervalRef.current) clearInterval(simIntervalRef.current);
+
+    // Smooth simulation state
+    let currentEmotionIdx = Math.floor(Math.random() * EMOTIONS.length);
+    let holdCounter = 0;
+
     simIntervalRef.current = setInterval(() => {
       if (!streamRef.current?.active) {
         if (simIntervalRef.current) clearInterval(simIntervalRef.current);
         return;
       }
-      const idx = Math.floor(Math.random() * EMOTIONS.length);
-      setEmotion(EMOTIONS[idx]);
-      setConfidence(Math.round(60 + Math.random() * 35));
-    }, 2000);
+
+      // Simulate stability: hold the same emotion for 3-5 intervals, then shift smoothly
+      if (holdCounter > 0) {
+        holdCounter--;
+        setConfidence(prev => Math.min(99, Math.max(75, prev + (Math.random() * 10 - 5))));
+      } else {
+        // Shift emotion slightly (mostly likely to stay neutral or happy if already there)
+        if (Math.random() > 0.4) {
+          currentEmotionIdx = EMOTIONS.indexOf("neutral");
+        } else {
+          currentEmotionIdx = Math.floor(Math.random() * EMOTIONS.length);
+        }
+        holdCounter = Math.floor(Math.random() * 4) + 2;
+        setEmotion(EMOTIONS[currentEmotionIdx]);
+        setConfidence(Math.round(80 + Math.random() * 15));
+      }
+    }, 1500);
   }, []);
 
   useEffect(() => {

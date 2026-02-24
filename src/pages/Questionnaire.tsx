@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { ClipboardList, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const questions = [
+const allQuestions = [
+  // Set 1
   { id: "q1", text: "How often do you feel nervous or anxious?", category: "anxiety" },
   { id: "q2", text: "How often do you have trouble relaxing?", category: "anxiety" },
   { id: "q3", text: "How often do you feel overwhelmed by your workload?", category: "stress" },
@@ -18,7 +19,33 @@ const questions = [
   { id: "q6", text: "How often do you lose interest in activities you used to enjoy?", category: "fatigue" },
   { id: "q7", text: "How often do you feel isolated from friends or family?", category: "stress" },
   { id: "q8", text: "How often do you feel hopeful about the future?", category: "anxiety", reverse: true },
+
+  // Set 2
+  { id: "q9", text: "How often do you feel a sense of dread or panic?", category: "anxiety" },
+  { id: "q10", text: "How often do you find your mind racing before you sleep?", category: "anxiety" },
+  { id: "q11", text: "How often do you feel you have too much on your plate?", category: "stress" },
+  { id: "q12", text: "How often do you get easily irritated by small issues?", category: "stress" },
+  { id: "q13", text: "How often do you feel a lack of energy for basic tasks?", category: "fatigue" },
+  { id: "q14", text: "How often do you feel emotionally drained by interactions?", category: "fatigue" },
+  { id: "q15", text: "How often do you feel you have no one to talk to?", category: "stress" },
+  { id: "q16", text: "How often do you feel capable of handling challenges?", category: "anxiety", reverse: true },
+
+  // Set 3
+  { id: "q17", text: "How often do you worry about things out of your control?", category: "anxiety" },
+  { id: "q18", text: "How often do you experience physical tension (e.g. tight jaw, shoulders)?", category: "anxiety" },
+  { id: "q19", text: "How often do you feel pressured to meet high expectations?", category: "stress" },
+  { id: "q20", text: "How often do you skip breaks or meals due to busyness?", category: "stress" },
+  { id: "q21", text: "How often do you feel groggy waking up in the morning?", category: "fatigue" },
+  { id: "q22", text: "How often do you avoid hobbies you used to find fun?", category: "fatigue" },
+  { id: "q23", text: "How often do you feel misunderstood by people around you?", category: "stress" },
+  { id: "q24", text: "How often do you feel proud of the things you accomplish?", category: "anxiety", reverse: true },
 ];
+
+const getDailyQuestions = () => {
+  const seed = Math.floor(new Date().getTime() / (1000 * 60 * 60 * 24));
+  const setIndex = seed % 3;
+  return allQuestions.slice(setIndex * 8, setIndex * 8 + 8);
+};
 
 const options = [
   { value: "0", label: "Not at all" },
@@ -33,6 +60,7 @@ export default function Questionnaire() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [scores, setScores] = useState<{ total: number; anxiety: number; stress: number; fatigue: number } | null>(null);
+  const [questions] = useState(getDailyQuestions);
 
   const allAnswered = questions.every((q) => answers[q.id] !== undefined);
 
