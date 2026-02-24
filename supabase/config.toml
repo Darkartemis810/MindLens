@@ -1,0 +1,13 @@
+project_id = "xlenexrwalkblenbpdph"
+
+[functions.analyze-journal]
+verify_jwt = false
+
+[functions.predict-burnout]
+verify_jwt = false
+
+[functions.ai-suggestions]
+verify_jwt = false
+
+[functions.wellbeing-chat]
+verify_jwt = false
