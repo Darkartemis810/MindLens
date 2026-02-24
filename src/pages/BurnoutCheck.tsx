@@ -84,19 +84,19 @@ export default function BurnoutCheck() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-3">
               <Label className="text-base text-foreground/80">Sleep (hours/day)</Label>
-              <Input type="number" min={0} max={24} value={sleepHours} onChange={(e) => setSleepHours(+e.target.value)} className="bg-background/50 border-primary/20 h-11 text-lg" />
+              <Input type="number" min={0} max={24} value={sleepHours === 0 ? "" : sleepHours} onChange={(e) => setSleepHours(Math.min(24, Math.max(0, +e.target.value)))} className="bg-background/50 border-primary/20 h-11 text-lg" />
             </div>
             <div className="space-y-3">
               <Label className="text-base text-foreground/80">Study (hours/day)</Label>
-              <Input type="number" min={0} max={24} value={studyHours} onChange={(e) => setStudyHours(+e.target.value)} className="bg-background/50 border-primary/20 h-11 text-lg" />
+              <Input type="number" min={0} max={24} value={studyHours === 0 ? "" : studyHours} onChange={(e) => setStudyHours(Math.min(24, Math.max(0, +e.target.value)))} className="bg-background/50 border-primary/20 h-11 text-lg" />
             </div>
             <div className="space-y-3">
               <Label className="text-base text-foreground/80">Screen Time (hours/day)</Label>
-              <Input type="number" min={0} max={24} value={screenTime} onChange={(e) => setScreenTime(+e.target.value)} className="bg-background/50 border-primary/20 h-11 text-lg" />
+              <Input type="number" min={0} max={24} value={screenTime === 0 ? "" : screenTime} onChange={(e) => setScreenTime(Math.min(24, Math.max(0, +e.target.value)))} className="bg-background/50 border-primary/20 h-11 text-lg" />
             </div>
             <div className="space-y-3">
               <Label className="text-base text-foreground/80">Social Interaction (1-10)</Label>
-              <Input type="number" min={1} max={10} value={socialInteraction} onChange={(e) => setSocialInteraction(+e.target.value)} className="bg-background/50 border-primary/20 h-11 text-lg" />
+              <Input type="number" min={1} max={10} value={socialInteraction === 0 ? "" : socialInteraction} onChange={(e) => setSocialInteraction(Math.min(10, Math.max(1, +e.target.value)))} className="bg-background/50 border-primary/20 h-11 text-lg" />
             </div>
           </div>
 
