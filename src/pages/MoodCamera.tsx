@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react";
+import * as faceapi from "face-api.js";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export default function MoodCamera() {
   const [streaming, setStreaming] = useState(false);
   const [emotion, setEmotion] = useState<string | null>(null);
   const [confidence, setConfidence] = useState<number>(0);
+  const [isModelsLoaded, setIsModelsLoaded] = useState(false);
   const streamRef = useRef<MediaStream | null>(null);
   const simIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -31,36 +33,41 @@ export default function MoodCamera() {
     setStreaming(false);
   }, []);
 
-  const simulateDetection = useCallback(() => {
-    if (simIntervalRef.current) clearInterval(simIntervalRef.current);
+  const detectEmotions = useCallback(async () => {
+    if (!videoRef.current || !streamRef.current?.active) return;
 
-    // Smooth simulation state
-    let currentEmotionIdx = Math.floor(Math.random() * EMOTIONS.length);
-    let holdCounter = 0;
+    simIntervalRef.current = setInterval(async () => {
+      if (videoRef.current && streamRef.current?.active) {
+        const detection = await faceapi.detectSingleFace(
+          videoRef.current,
+          new faceapi.TinyFaceDetectorOptions()
+        ).withFaceExpressions();
 
-    simIntervalRef.current = setInterval(() => {
-      if (!streamRef.current?.active) {
-        if (simIntervalRef.current) clearInterval(simIntervalRef.current);
-        return;
-      }
-
-      // Simulate stability: hold the same emotion for 3-5 intervals, then shift smoothly
-      if (holdCounter > 0) {
-        holdCounter--;
-        setConfidence(prev => Math.min(99, Math.max(75, prev + (Math.random() * 10 - 5))));
-      } else {
-        // Shift emotion slightly (mostly likely to stay neutral or happy if already there)
-        if (Math.random() > 0.4) {
-          currentEmotionIdx = EMOTIONS.indexOf("neutral");
-        } else {
-          currentEmotionIdx = Math.floor(Math.random() * EMOTIONS.length);
+        if (detection) {
+          const expressions = detection.expressions;
+          const dominantEmotion = Object.entries(expressions).reduce((a, b) => a[1] > b[1] ? a : b);
+          setEmotion(dominantEmotion[0]);
+          setConfidence(Math.round(dominantEmotion[1] * 100));
         }
-        holdCounter = Math.floor(Math.random() * 4) + 2;
-        setEmotion(EMOTIONS[currentEmotionIdx]);
-        setConfidence(Math.round(80 + Math.random() * 15));
       }
-    }, 1500);
+    }, 500);
   }, []);
+
+  useEffect(() => {
+    const loadModels = async () => {
+      const MODEL_URL = "/models";
+      try {
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+          faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+        ]);
+        setIsModelsLoaded(true);
+      } catch (err) {
+        toast({ title: "Model Error", description: "Failed to load emotion detection models.", variant: "destructive" });
+      }
+    };
+    loadModels();
+  }, [toast]);
 
   useEffect(() => {
     return () => {
@@ -75,13 +82,13 @@ export default function MoodCamera() {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
         setStreaming(true);
-        // Simulate emotion detection since face-api.js models need to be loaded from external CDN
-        simulateDetection();
+        // Execute real emotion detection using face-api.js
+        detectEmotions();
       }
     } catch {
       toast({ title: "Camera Error", description: "Could not access webcam. Please allow camera permissions.", variant: "destructive" });
     }
-  }, [toast, simulateDetection]);
+  }, [toast, detectEmotions]);
 
   const saveMood = async () => {
     if (!emotion || !user) return;
@@ -147,7 +154,9 @@ export default function MoodCamera() {
 
           <div className="flex gap-3">
             {!streaming ? (
-              <Button onClick={startCamera} className="flex-1 h-14 text-base rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-md transition-all hover:-translate-y-0.5"><Camera className="h-5 w-5 mr-2" /> Start Camera</Button>
+              <Button onClick={startCamera} disabled={!isModelsLoaded} className="flex-1 h-14 text-base rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-md transition-all hover:-translate-y-0.5">
+                <Camera className="h-5 w-5 mr-2" /> {isModelsLoaded ? "Start Camera" : "Loading Models..."}
+              </Button>
             ) : (
               <>
                 <Button variant="outline" onClick={stopCamera} className="flex-1 h-14 text-base rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 transition-colors"><CameraOff className="h-5 w-5 mr-2" /> Stop & Clear</Button>
