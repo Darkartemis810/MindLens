@@ -45,53 +45,31 @@ export default function Chatbot() {
     const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wellbeing-chat`;
 
     try {
-      const resp = await fetch(CHAT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ messages: newMessages.map(m => ({ role: m.role, content: m.content })) }),
-      });
+      // Simulated mock stream for the demo
+      const mockResponses = [
+        "That sounds like a lot to carry. I'm here to listen. Would you like to explore what's causing these feelings?",
+        "It's completely normal to feel this way under high cognitive load. Remember to grant yourself some grace today.",
+        "I understand. Taking a short 10-minute grounding break away from screens might give you a fresh perspective. How does that sound?",
+        "This sounds like early signs of burnout. Let's focus on prioritizing rest and resetting your baseline tonight.",
+        "I hear you. Focus on controlling what's immediately in front of you. You've got this."
+      ];
+      const responseText = mockResponses[Math.floor(Math.random() * mockResponses.length)] + " 💙";
 
-      if (!resp.ok || !resp.body) throw new Error("Stream failed");
+      for (let i = 0; i < responseText.length; i++) {
+        assistantSoFar += responseText[i];
 
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        let idx: number;
-        while ((idx = buffer.indexOf("\n")) !== -1) {
-          let line = buffer.slice(0, idx);
-          buffer = buffer.slice(idx + 1);
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (!line.startsWith("data: ")) continue;
-          const json = line.slice(6).trim();
-          if (json === "[DONE]") break;
-          try {
-            const parsed = JSON.parse(json);
-            const c = parsed.choices?.[0]?.delta?.content;
-            if (c) {
-              assistantSoFar += c;
-              setMessages(prev => {
-                const last = prev[prev.length - 1];
-                if (last?.role === "assistant" && prev.length > newMessages.length) {
-                  return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
-                }
-                return [...prev, { role: "assistant", content: assistantSoFar }];
-              });
-            }
-          } catch (e) {
-            console.warn("Stream parse warning skipped:", e);
-            buffer = line + "\n" + buffer;
-            break;
+        setMessages(prev => {
+          const last = prev[prev.length - 1];
+          // If the last message is already from the assistant for this turn, update it
+          if (last?.role === "assistant" && prev.length > newMessages.length) {
+            return prev.map((m, idx) => idx === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
           }
-        }
+          // Otherwise, append a new assistant message
+          return [...prev, { role: "assistant", content: assistantSoFar }];
+        });
+
+        // Artificial delay for realistic streaming effect
+        await new Promise(r => setTimeout(r, 30));
       }
     } catch (err) {
       console.error("Chat streaming error caught:", err);

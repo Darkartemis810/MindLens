@@ -9,63 +9,80 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { latestJournal, latestMood, latestBurnout, latestQuestionnaire } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("API key not configured");
+    const { journalsData, moodsData, burnoutData, questionnaireData } = await req.json();
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
 
     const context = [];
-    if (latestJournal) context.push(`Journal: sentiment=${latestJournal.sentiment}, emotion=${latestJournal.emotion}, mood=${latestJournal.mood_score}/10`);
-    if (latestMood) context.push(`Camera emotion: ${latestMood.emotion}`);
-    if (latestBurnout) context.push(`Burnout risk: ${latestBurnout.risk_level}, sleep=${latestBurnout.sleep_hours}h, study=${latestBurnout.study_hours}h`);
-    if (latestQuestionnaire) context.push(`Questionnaire: total=${latestQuestionnaire.total_score}/24, anxiety=${latestQuestionnaire.anxiety_score}, stress=${latestQuestionnaire.stress_score}`);
-
-    if (context.length === 0) {
-      return new Response(JSON.stringify({ suggestions: [] }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (journalsData && journalsData.length > 0) {
+      context.push("Recent Journals:");
+      journalsData.forEach((j: any, i: number) => {
+        context.push(`- Day ${i}: mood=${j.mood_score}/10, emotion=${j.emotion}, sentiment=${j.sentiment}`);
+      });
+    }
+    if (moodsData && moodsData.length > 0) {
+      context.push("Recent Camera Emotions:");
+      moodsData.forEach((m: any, i: number) => context.push(`- Scan ${i}: ${m.emotion} (${m.confidence}% confidence)`));
+    }
+    if (burnoutData && burnoutData.length > 0) {
+      context.push("Burnout Risk History:");
+      burnoutData.forEach((b: any, i: number) => context.push(`- Assessment ${i}: Risk=${b.risk_level}, Sleep=${b.sleep_hours}h, Study=${b.study_hours}h`));
+    }
+    if (questionnaireData && questionnaireData.length > 0) {
+      context.push("Questionnaire History:");
+      questionnaireData.forEach((q: any, i: number) => context.push(`- Score ${i}: Total=${q.total_score}/24, Anxiety=${q.anxiety_score}, Stress=${q.stress_score}, Fatigue=${q.fatigue_score}`));
     }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    if (context.length === 0) {
+      return new Response(JSON.stringify({ suggestions: ["Complete assessments to generate a holistic report."] }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const payloadContext = context.join("\n");
+    const prompt = `You are an expert student wellbeing AI. Analyze the following combined historical data (up to 30 days of journals, moods, burnout risks, and questionnaires). Provide exactly 3 to 5 highly actionable, insightful, and supportive suggestions based on the trends you see across the different metrics.\n\nStudent Data:\n${payloadContext}`;
+
+    // Fix for Gemini API format. 
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: "You are a student wellbeing advisor. Generate 3-5 actionable, supportive suggestions based on the student's data. Be specific and practical." },
-          { role: "user", content: `Student data:\n${context.join("\n")}` }
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "provide_suggestions",
-            description: "Return wellbeing suggestions",
-            parameters: {
-              type: "object",
-              properties: {
-                suggestions: { type: "array", items: { type: "string" } }
-              },
-              required: ["suggestions"],
-              additionalProperties: false
-            }
-          }
+        contents: [{
+          parts: [{ text: prompt }]
         }],
-        tool_choice: { type: "function", function: { name: "provide_suggestions" } }
+        systemInstruction: {
+          parts: [{ text: "Return only a JSON object strictly matching this format: { \"suggestions\": [\"suggestion 1\", \"suggestion 2\", \"suggestion 3\"] }. No surrounding markdown." }]
+        },
+        generationConfig: {
+          responseMimeType: "application/json",
+        }
       }),
     });
 
-    if (!response.ok) throw new Error("AI gateway error");
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("Gemini API Error:", errText);
+      throw new Error("Gemini API error");
+    }
 
     const data = await response.json();
-    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    const result = JSON.parse(toolCall.function.arguments);
+    let textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "{\"suggestions\": []}";
 
-    return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    // Safety parsing
+    try {
+      const parsed = JSON.parse(textResponse);
+      return new Response(JSON.stringify(parsed), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } catch (parseError) {
+      return new Response(JSON.stringify({ suggestions: ["Unable to parse AI response. Keep logging your data!"] }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
   } catch (e) {
     console.error("ai-suggestions error:", e);
-    return new Response(JSON.stringify({ suggestions: ["Take short breaks between study sessions", "Aim for 7-8 hours of sleep", "Stay connected with friends and family"] }), {
+    return new Response(JSON.stringify({ suggestions: ["Configure the GEMINI_API_KEY on the server to enable comprehensive AI reports."] }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

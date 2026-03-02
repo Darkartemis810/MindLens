@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,93 +6,47 @@
 
 @layer base {
   :root {
-    --background: 200 30% 98%;
-    --foreground: 210 40% 12%;
+    --background: 0 0% 100%;
+    /* Pure White */
+    --foreground: 222.2 47.4% 11.2%;
+    /* Slate 900 */
 
-    --card: 200 25% 99%;
-    --card-foreground: 210 40% 12%;
+    --card: 0 0% 100%;
+    /* Pure White */
+    --card-foreground: 222.2 47.4% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 40% 12%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 187 60% 42%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 222.2 47.4% 11.2%;
+    /* Slate 900 */
+    --primary-foreground: 210 40% 98%;
+    /* White */
 
-    --secondary: 160 35% 92%;
-    --secondary-foreground: 180 30% 20%;
+    --secondary: 217 91% 60%;
+    /* Ethereal Blue #3B82F6 */
+    --secondary-foreground: 0 0% 100%;
+    /* White */
 
-    --muted: 200 20% 95%;
-    --muted-foreground: 210 12% 50%;
+    --muted: 210 40% 96.1%;
+    /* Soft Cloud #F3F4F6 */
+    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Slate 500 */
 
-    --accent: 260 50% 55%;
+    --accent: 258 90% 66%;
+    /* Calm Lavender #8B5CF6 */
     --accent-foreground: 0 0% 100%;
+    /* White */
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 200 20% 90%;
-    --input: 200 20% 90%;
-    --ring: 187 60% 42%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 91% 60%;
+    /* Ethereal Blue Focus */
 
-    --radius: 0.75rem;
-
-    --success: 152 55% 42%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 55%;
-    --warning-foreground: 38 92% 15%;
-
-    --sidebar-background: 200 25% 97%;
-    --sidebar-foreground: 210 20% 30%;
-    --sidebar-primary: 187 60% 42%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 20% 93%;
-    --sidebar-accent-foreground: 210 20% 20%;
-    --sidebar-border: 200 15% 90%;
-    --sidebar-ring: 187 60% 42%;
-  }
-
-  .dark {
-    --background: 210 35% 8%;
-    --foreground: 200 20% 92%;
-
-    --card: 210 30% 11%;
-    --card-foreground: 200 20% 92%;
-
-    --popover: 210 30% 11%;
-    --popover-foreground: 200 20% 92%;
-
-    --primary: 187 60% 50%;
-    --primary-foreground: 210 40% 8%;
-
-    --secondary: 180 20% 18%;
-    --secondary-foreground: 180 20% 85%;
-
-    --muted: 210 25% 15%;
-    --muted-foreground: 210 12% 60%;
-
-    --accent: 260 50% 60%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62% 40%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 210 20% 18%;
-    --input: 210 20% 18%;
-    --ring: 187 60% 50%;
-
-    --success: 152 55% 45%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 55%;
-    --warning-foreground: 38 92% 15%;
-
-    --sidebar-background: 210 30% 10%;
-    --sidebar-foreground: 200 15% 80%;
-    --sidebar-primary: 187 60% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 25% 15%;
-    --sidebar-accent-foreground: 200 15% 85%;
-    --sidebar-border: 210 20% 15%;
-    --sidebar-ring: 187 60% 50%;
+    --radius: 1rem;
   }
 }
 
@@ -102,11 +56,31 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    @apply bg-white text-slate-800 font-sans antialiased relative min-h-screen overflow-x-hidden;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display tracking-tight text-slate-900;
+  }
+}
+
+@layer utilities {
+  .luminous-shadow {
+    box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.15), 0 10px 20px -10px rgba(139, 92, 246, 0.1);
+    @apply transition-all duration-500;
+  }
+
+  .luminous-shadow:hover {
+    box-shadow: 0 30px 50px -15px rgba(59, 130, 246, 0.25), 0 20px 30px -10px rgba(139, 92, 246, 0.15);
+    transform: translateY(-4px);
+  }
+
+  .clear-glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-sm transition-all duration-300;
   }
 }

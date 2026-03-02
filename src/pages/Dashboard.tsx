@@ -19,25 +19,25 @@ export default function Dashboard() {
     if (!user) return;
     const load = async () => {
       const [jRes, mRes, bRes, qRes] = await Promise.all([
-        supabase.from("journal_entries").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(7),
-        supabase.from("mood_records").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(7),
-        supabase.from("burnout_results").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1),
-        supabase.from("questionnaire_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1),
+        supabase.from("journal_entries").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30),
+        supabase.from("mood_records").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30),
+        supabase.from("burnout_results").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
+        supabase.from("questionnaire_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
       ]);
       setJournals(jRes.data || []);
       setMoods(mRes.data || []);
       setBurnout(bRes.data?.[0] || null);
       setQuestionnaire(qRes.data?.[0] || null);
 
-      // Get AI suggestions
+      // Get Comprehensive AI suggestions
       setLoadingSuggestions(true);
       try {
         const { data } = await supabase.functions.invoke("ai-suggestions", {
           body: {
-            latestJournal: jRes.data?.[0],
-            latestMood: mRes.data?.[0],
-            latestBurnout: bRes.data?.[0],
-            latestQuestionnaire: qRes.data?.[0],
+            journalsData: jRes.data || [],
+            moodsData: mRes.data || [],
+            burnoutData: bRes.data || [],
+            questionnaireData: qRes.data || [],
           },
         });
         setSuggestions(data?.suggestions || []);
@@ -169,7 +169,7 @@ export default function Dashboard() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Lightbulb className="h-5 w-5 text-warning" /> AI Suggestions
+            <Lightbulb className="h-5 w-5 text-warning" /> Comprehensive AI Wellbeing Report
           </CardTitle>
         </CardHeader>
         <CardContent>
