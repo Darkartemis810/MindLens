@@ -59,7 +59,7 @@ export default function Journal() {
           console.error("Speech recognition error", event.error);
           setIsRecording(false);
           if (event.error !== 'no-speech') {
-            toast({ title: "Microphone Error", description: "Could not access microphone.", variant: "destructive" });
+            toast({ title: "Microphone Error", description: "Could not access microphone or error occurred.", variant: "destructive" });
           }
         };
 
@@ -147,8 +147,8 @@ export default function Journal() {
         <p className="text-muted-foreground">Write about your day — our AI will analyze your mood and emotions.</p>
       </div>
 
-      <Card className="border-primary/10 shadow-lg shadow-primary/5 bg-card/60 backdrop-blur-sm relative">
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
+      <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/20 dark:border-slate-700/50 shadow-xl relative">
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 dark:bg-primary/20 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
         <CardContent className="pt-6 space-y-4 relative z-10">
           <div className="relative group">
             <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
@@ -157,7 +157,7 @@ export default function Journal() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={8}
-              className="resize-none border-primary/20 focus-visible:ring-primary/30 relative z-10 bg-background/50 backdrop-blur-sm text-base p-4 pb-14"
+              className="resize-none border-primary/20 focus-visible:ring-indigo-500/50 relative z-10 bg-background/50 backdrop-blur-sm text-base p-4 pb-14 shadow-inner rounded-2xl transition-all duration-300 dark:bg-slate-800/50 dark:border-slate-700"
             />
 
             <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center z-20 px-2 pointer-events-auto">
@@ -183,7 +183,7 @@ export default function Journal() {
               <Button
                 variant={isRecording ? "destructive" : "secondary"}
                 size="sm"
-                className={`h-9 px-4 gap-2 rounded-full transition-all ${isRecording ? "animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.5)]" : "bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 backdrop-blur-sm"}`}
+                className={`h-9 px-4 gap-2 rounded-full transition-all ${isRecording ? "animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.5)]" : "bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 backdrop-blur-sm dark:bg-slate-800/50 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700/50"}`}
                 onClick={toggleRecording}
               >
                 {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
@@ -191,7 +191,7 @@ export default function Journal() {
               </Button>
             </div>
           </div>
-          <Button onClick={handleSubmit} disabled={loading || !content.trim()} className="w-full h-12 text-base bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+          <Button onClick={handleSubmit} disabled={loading || !content.trim()} className="w-full h-12 text-base bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-md hover:shadow-lg hover:shadow-indigo-500/25">
             {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Sparkles className="h-5 w-5 mr-2" />}
             {loading ? "Analyzing..." : "Analyze & Save"}
           </Button>
@@ -199,8 +199,8 @@ export default function Journal() {
       </Card>
 
       {result && (
-        <Card className="animate-fade-in relative overflow-hidden border-primary/20 bg-primary/5 shadow-lg">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+        <Card className="animate-fade-in relative overflow-hidden border-primary/20 dark:border-slate-700/50 bg-primary/5 dark:bg-slate-900/60 shadow-lg backdrop-blur-md">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
           <CardHeader className="relative z-10 pb-2">
             <CardTitle className="text-xl flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" /> AI Analysis

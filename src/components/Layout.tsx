@@ -54,7 +54,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={signOut} className="hidden md:flex text-muted-foreground hover:text-foreground">
+                  <Button variant="ghost" size="sm" onClick={async () => await signOut()} className="hidden md:flex text-muted-foreground hover:text-foreground">
                     <LogOut className="h-4 w-4 mr-1" /> Sign Out
                   </Button>
                   <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -80,7 +80,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {label}
               </Link>
             ))}
-            <Button variant="ghost" size="sm" onClick={signOut} className="w-full justify-start mt-2">
+            <Button variant="ghost" size="sm" onClick={async () => {
+              setMobileOpen(false);
+              await signOut();
+            }} className="w-full justify-start mt-2">
               <LogOut className="h-4 w-4 mr-1" /> Sign Out
             </Button>
           </nav>

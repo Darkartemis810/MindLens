@@ -39,7 +39,7 @@ export default function Profile() {
                         <CardDescription className="text-sm break-all">{user.email}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4 pt-4">
-                        <Button variant="outline" className="w-full h-11 bg-background/50 border-primary/20 hover:bg-primary/10 transition-colors" onClick={signOut}>
+                        <Button variant="outline" className="w-full h-11 bg-background/50 border-primary/20 hover:bg-primary/10 transition-colors" onClick={async () => await signOut()}>
                             <LogOut className="h-4 w-4 mr-2 text-destructive" />
                             Sign Out
                         </Button>

@@ -40,7 +40,7 @@ export default function MoodCamera() {
       if (videoRef.current && streamRef.current?.active) {
         const detection = await faceapi.detectSingleFace(
           videoRef.current,
-          new faceapi.TinyFaceDetectorOptions()
+          new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 })
         ).withFaceExpressions();
 
         if (detection) {
@@ -107,10 +107,10 @@ export default function MoodCamera() {
   };
 
   return (
-    <div className="container max-w-3xl py-8 space-y-8 relative min-h-[calc(100vh-4rem)]">
+    <div className="container max-w-3xl py-8 space-y-8 relative min-h-[calc(100vh-4rem)] animate-in fade-in slide-in-from-bottom-5 duration-700">
       {/* Background Glows */}
-      <div className="absolute top-10 right-10 w-72 h-72 bg-primary/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-accent/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+      <div className="absolute top-10 right-10 w-72 h-72 bg-secondary/15 dark:bg-secondary/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-accent/15 dark:bg-accent/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
       <div className="space-y-3 text-center mb-8">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/10 mb-4 shadow-sm relative overflow-hidden group">
@@ -123,9 +123,9 @@ export default function MoodCamera() {
         <p className="text-muted-foreground text-lg">Use your webcam to detect facial emotions in real-time.</p>
       </div>
 
-      <Card className="bg-card/60 backdrop-blur-xl border-primary/10 shadow-xl shadow-primary/5 rounded-3xl overflow-hidden relative p-2">
+      <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-xl border-primary/10 dark:border-slate-700/50 shadow-xl shadow-primary/5 dark:shadow-none rounded-3xl overflow-hidden relative p-2">
         <CardContent className="pt-4 space-y-6">
-          <div className="relative aspect-video bg-background/50 backdrop-blur-sm border border-primary/20 rounded-2xl overflow-hidden flex items-center justify-center shadow-inner">
+          <div className="relative aspect-video bg-background/50 dark:bg-slate-800/50 backdrop-blur-sm border border-primary/20 dark:border-slate-700 rounded-2xl overflow-hidden flex items-center justify-center shadow-inner">
             <video ref={videoRef} autoPlay muted playsInline className={`w-full h-full object-cover ${streaming ? "" : "hidden"}`} />
             {!streaming && (
               <div className="text-center space-y-3 p-6 animate-pulse">
@@ -136,7 +136,7 @@ export default function MoodCamera() {
               </div>
             )}
             {streaming && emotion && (
-              <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center bg-background/80 backdrop-blur-xl border border-primary/20 rounded-2xl p-4 shadow-lg animate-fade-in">
+              <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center bg-background/80 dark:bg-slate-900/80 backdrop-blur-xl border border-primary/20 dark:border-slate-700 rounded-2xl p-4 shadow-lg animate-fade-in">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl filter drop-shadow-sm">{emotionEmoji[emotion] || "🤔"}</span>
                   <div className="text-left">
@@ -168,7 +168,7 @@ export default function MoodCamera() {
       </Card>
 
       {emotion && (
-        <Card className="animate-fade-in bg-card/60 backdrop-blur-md border-primary/10 shadow-lg relative overflow-hidden group">
+        <Card className="animate-fade-in bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg dark:shadow-none relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium text-muted-foreground uppercase tracking-wider">Latest Detection</CardTitle>

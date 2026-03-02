@@ -62,10 +62,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container py-8 space-y-8 relative min-h-[calc(100vh-4rem)]">
+    <div className="container py-8 space-y-8 relative min-h-[calc(100vh-4rem)] animate-in fade-in slide-in-from-bottom-5 duration-700">
       {/* Background Glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary/15 dark:bg-secondary/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/15 dark:bg-accent/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
       <h1 className="text-3xl font-display font-bold flex items-center gap-3">
         <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-accent/10 border border-primary/10">
@@ -76,7 +76,7 @@ export default function Dashboard() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {/* Daily Mood */}
-        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
+        <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg shadow-primary/5 dark:shadow-none hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
               <BookOpen className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Journal Mood
@@ -93,7 +93,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Camera Emotion */}
-        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
+        <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg shadow-primary/5 dark:shadow-none hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
               <Camera className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Camera Emotion
@@ -110,7 +110,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Burnout Risk */}
-        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
+        <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg shadow-primary/5 dark:shadow-none hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
               <Activity className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Burnout Risk
@@ -124,7 +124,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Questionnaire */}
-        <Card className="bg-card/60 backdrop-blur-md border-primary/10 shadow-lg shadow-primary/5 hover:-translate-y-1 transition-transform group">
+        <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg shadow-primary/5 dark:shadow-none hover:-translate-y-1 transition-transform group">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
               <Brain className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" /> Wellbeing Score
@@ -147,7 +147,7 @@ export default function Dashboard() {
 
       {/* Mood Trend Chart */}
       {moodChartData.length > 1 && (
-        <Card>
+        <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg dark:shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Weekly Mood Trend</CardTitle>
           </CardHeader>
@@ -166,7 +166,7 @@ export default function Dashboard() {
       )}
 
       {/* AI Suggestions */}
-      <Card>
+      <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg dark:shadow-none">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Lightbulb className="h-5 w-5 text-warning" /> Comprehensive AI Wellbeing Report
@@ -191,7 +191,7 @@ export default function Dashboard() {
 
       {/* Journal Sentiment */}
       {latestJournal?.ai_insight && (
-        <Card>
+        <Card className="bg-card/60 dark:bg-slate-900/60 backdrop-blur-md border-primary/10 dark:border-slate-700/50 shadow-lg dark:shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Latest Journal Insight</CardTitle>
           </CardHeader>
