@@ -22,10 +22,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
+    <div className="min-h-screen bg-background dark:bg-slate-950">
+      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md dark:bg-slate-950/90 dark:border-slate-800 dark:text-slate-100">
         <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold text-primary">
+          <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold text-primary dark:text-slate-50">
             <Brain className="h-6 w-6" />
             MindLens
           </Link>
@@ -43,8 +43,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       key={to}
                       to={to}
                       className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === to
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "bg-primary/10 text-primary dark:bg-slate-800 dark:text-slate-50"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800"
                         }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -54,7 +54,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={async () => await signOut()} className="hidden md:flex text-muted-foreground hover:text-foreground">
+                  <Button variant="ghost" size="sm" onClick={async () => await signOut()} className="hidden md:flex text-muted-foreground hover:text-foreground dark:text-slate-300 dark:hover:text-white">
                     <LogOut className="h-4 w-4 mr-1" /> Sign Out
                   </Button>
                   <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -67,13 +67,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         {user && mobileOpen && (
-          <nav className="md:hidden border-t bg-card p-4 space-y-1">
+          <nav className="md:hidden border-t bg-card p-4 space-y-1 dark:bg-slate-950 dark:border-slate-800">
             {navItems.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
                 to={to}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${location.pathname === to ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${location.pathname === to ? "bg-primary/10 text-primary dark:bg-slate-800 dark:text-slate-50" : "text-muted-foreground dark:text-slate-300 dark:hover:text-white"
                   }`}
               >
                 <Icon className="h-4 w-4" />
@@ -92,7 +92,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="animate-fade-in">{children}</main>
 
-      <footer className="border-t py-6 mt-12">
+      <footer className="border-t py-6 mt-12 dark:border-slate-800">
         <div className="container text-center text-xs text-muted-foreground">
           <p>⚠️ MindLens is not a medical tool. It does not provide diagnoses or medical advice. If you're struggling, please reach out to a mental health professional.</p>
           <p className="mt-1">Your data is private and only visible to you.</p>
